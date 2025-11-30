@@ -1,0 +1,46 @@
+# FastAPI and ASGI server (Python 3.12 compatible)
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-multipart==0.0.20
+
+# Database
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+aiosqlite==0.21.0
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.1
+
+# Validation and serialization (Pydantic v2)
+pydantic==2.10.5
+pydantic-settings==2.7.1
+email-validator==2.2.0
+
+# LangChain and LLM (Python 3.12 compatible) - using latest compatible versions
+langchain>=0.3.18
+langchain-community>=0.3.18
+langsmith>=0.2.11
+
+# Hugging Face and Transformers
+transformers==4.47.1
+torch==2.5.1
+accelerate==1.2.1
+sentencepiece==0.2.0
+
+# FAISS
+faiss-cpu==1.9.0.post1
+sentence-transformers==3.3.1
+
+# HTTP client
+httpx==0.28.1
+
+# Utilities
+python-dotenv==1.0.1
+jinja2==3.1.5
+
+# File parsing
+PyPDF2==3.0.1
+python-docx==1.1.2
