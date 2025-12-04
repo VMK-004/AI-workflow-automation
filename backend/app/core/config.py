@@ -15,8 +15,9 @@ class Settings(BaseSettings):
     APP_NAME: str = "AI Workflow Builder"
     DEBUG: bool = True
     
-    # Database
-    DATABASE_URL: str = "sqlite+aiosqlite:///./ai_workflow_builder.db"
+    # Database - PostgreSQL by default, can be overridden via environment variable or .env file
+    # Priority: 1) Environment variable DATABASE_URL, 2) .env file, 3) Default PostgreSQL
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_workflow_builder"
     
     # JWT
     SECRET_KEY: str = "your-secret-key-change-in-production"

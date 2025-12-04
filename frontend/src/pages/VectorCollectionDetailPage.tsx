@@ -240,3 +240,4 @@ export const VectorCollectionDetailPage: FC = () => {
   );
 };
 
+

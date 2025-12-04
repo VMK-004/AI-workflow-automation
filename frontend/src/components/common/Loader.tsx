@@ -20,3 +20,4 @@ export const Loader: FC<LoaderProps> = ({ size = 'md', text }) => {
   );
 };
 
+

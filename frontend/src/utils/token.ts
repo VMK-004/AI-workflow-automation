@@ -16,3 +16,4 @@ export const isAuthenticated = (): boolean => {
   return !!getToken();
 };
 
+

@@ -330,3 +330,4 @@ class GraphService:
         validation_result = GraphService.validate_graph(nodes, edges, allow_disconnected=False)
         return validation_result["sorted_nodes"]
 
+

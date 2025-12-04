@@ -51,3 +51,4 @@ AI Workflow Builder Platform/
 - Node packages are in `frontend/node_modules/` ✅
 - No duplicate or misplaced package managers ✅
 
+

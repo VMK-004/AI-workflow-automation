@@ -364,3 +364,4 @@ class VectorCollectionService:
                 detail=f"Failed to delete collection: {str(e)}"
             )
 
+

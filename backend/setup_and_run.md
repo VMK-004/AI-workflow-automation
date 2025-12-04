@@ -73,3 +73,4 @@ Make sure virtual environment is activated and dependencies are installed.
 - Check alembic.ini configuration
 - Verify app.db.base imports all models
 
+
