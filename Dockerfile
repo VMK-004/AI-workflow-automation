@@ -4,6 +4,9 @@ FROM python:3.12-slim
 # Set working directory
 WORKDIR /app
 
+# Set PYTHONPATH to include the app directory so Python can find modules
+ENV PYTHONPATH=/app
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
@@ -22,10 +25,11 @@ COPY backend/ /app/
 # Create directory for FAISS data
 RUN mkdir -p /app/data/faiss
 
-# Expose port 8000
+# Expose port (Render will set PORT env var, default to 8000)
 EXPOSE 8000
 
-# Run database migrations and start server
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+# Start server (migrations run in Pre-Deploy Command on Render)
+# Use PORT env var from Render, fallback to 8000 for local development
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
 
 
