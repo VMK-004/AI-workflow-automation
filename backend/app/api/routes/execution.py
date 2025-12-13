@@ -99,20 +99,32 @@ async def get_run_details(
     - error message if failed
     - final output
     """
-    # Get run details (includes authorization check)
-    run_details = await ExecutionService.get_workflow_run_details(
-        db=db,
-        workflow_run_id=run_id,
-        user_id=current_user.id
-    )
-    
-    if not run_details:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Workflow run not found"
+    try:
+        # Get run details (includes authorization check)
+        run_details = await ExecutionService.get_workflow_run_details(
+            db=db,
+            workflow_run_id=run_id,
+            user_id=current_user.id
         )
-    
-    return run_details
+        
+        if not run_details:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Workflow run not found"
+            )
+        
+        # Convert dict to Pydantic model for proper validation
+        return WorkflowRunDetailResponse(**run_details)
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"Error in get_run_details: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch run details: {str(e)}"
+        )
 
 
 

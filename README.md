@@ -19,6 +19,18 @@
 
 ---
 
+## 📸 Demo
+
+<div align="center">
+
+![AI Workflow Builder Demo](./AI_Workflow_Builder.gif)
+
+_Visual workflow builder with drag-and-drop interface_
+
+</div>
+
+---
+
 ## ✨ Features
 
 ### 🎯 Core Capabilities
@@ -34,12 +46,12 @@
 
 ### 🎨 Node Types
 
-| Node Type | Description | Use Cases |
-|-----------|-------------|-----------|
-| **LLM Call** | Execute Qwen LLM with custom prompts | Text generation, summarization, Q&A |
-| **HTTP Request** | Make REST API calls | External service integration |
-| **FAISS Search** | Semantic vector similarity search | RAG, document retrieval, similarity matching |
-| **DB Write** | Write data to PostgreSQL | Logging, result storage, data persistence |
+| Node Type        | Description                          | Use Cases                                    |
+| ---------------- | ------------------------------------ | -------------------------------------------- |
+| **LLM Call**     | Execute Qwen LLM with custom prompts | Text generation, summarization, Q&A          |
+| **HTTP Request** | Make REST API calls                  | External service integration                 |
+| **FAISS Search** | Semantic vector similarity search    | RAG, document retrieval, similarity matching |
+| **DB Write**     | Write data to PostgreSQL             | Logging, result storage, data persistence    |
 
 ### 🚀 Key Highlights
 
@@ -57,6 +69,7 @@
 ### Technology Stack
 
 **Backend:**
+
 - 🐍 **FastAPI** - Modern Python web framework
 - 🗄️ **PostgreSQL** - Relational database with async SQLAlchemy
 - 🤖 **LangChain** - LLM orchestration framework
@@ -66,6 +79,7 @@
 - 📦 **Alembic** - Database migrations
 
 **Frontend:**
+
 - ⚛️ **React 19** - UI library
 - 📘 **TypeScript** - Type safety
 - 🎨 **Tailwind CSS** - Utility-first styling
@@ -149,6 +163,7 @@ uvicorn app.main:app --reload
 ```
 
 Backend will be available at `http://localhost:8000`
+
 - API Docs: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
@@ -176,15 +191,15 @@ Frontend will be available at `http://localhost:5173`
 
 The platform uses 7 core database tables:
 
-| Table | Description |
-|-------|-------------|
-| `users` | User accounts with authentication |
-| `workflows` | Workflow definitions |
-| `nodes` | Individual workflow steps/nodes |
-| `edges` | Connections between nodes |
-| `workflow_runs` | Execution instances |
-| `node_executions` | Individual node execution logs |
-| `vector_collections` | FAISS index metadata |
+| Table                | Description                       |
+| -------------------- | --------------------------------- |
+| `users`              | User accounts with authentication |
+| `workflows`          | Workflow definitions              |
+| `nodes`              | Individual workflow steps/nodes   |
+| `edges`              | Connections between nodes         |
+| `workflow_runs`      | Execution instances               |
+| `node_executions`    | Individual node execution logs    |
+| `vector_collections` | FAISS index metadata              |
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed schema information.
 
@@ -245,6 +260,7 @@ DELETE /api/vectors/collections/{name}             # Delete collection
 ### Render.com (Current Deployment)
 
 The application is currently deployed on Render.com:
+
 - **Live URL**: https://ai-workflow-automation-ikld.onrender.com
 - **Frontend + Backend**: Combined in single Docker container
 - **Database**: Render PostgreSQL
@@ -300,6 +316,7 @@ FAISS Index for Future Search
 ### Manual API Testing
 
 All endpoints can be tested using the interactive Swagger UI:
+
 - Visit `http://localhost:8000/docs` when running locally
 - Or visit `https://ai-workflow-automation-ikld.onrender.com/docs` for production
 

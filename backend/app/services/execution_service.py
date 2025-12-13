@@ -295,7 +295,7 @@ class ExecutionService:
             user_id: ID of the user (for authorization)
         
         Returns:
-            Dict with workflow run details or None if not found
+            Dict with workflow run details including node_executions or None if not found
         """
         # Get workflow run
         workflow_run = await WorkflowRunService.get_run(db, workflow_run_id)
@@ -307,13 +307,44 @@ class ExecutionService:
         if workflow_run.user_id != user_id:
             return None
         
+        # Fetch all node executions for this run, ordered by execution_order
+        # Load node executions with their associated nodes using joinedload
+        from sqlalchemy.orm import joinedload
+        node_exec_stmt = (
+            select(NodeExecution)
+            .where(NodeExecution.workflow_run_id == workflow_run_id)
+            .options(joinedload(NodeExecution.node))
+            .order_by(NodeExecution.execution_order)
+        )
+        node_exec_result = await db.execute(node_exec_stmt)
+        node_execution_list = node_exec_result.scalars().unique().all()
+        
+        # Build node executions list
+        node_executions = []
+        for node_exec in node_execution_list:
+            node_executions.append({
+                "id": str(node_exec.id),
+                "workflow_run_id": str(node_exec.workflow_run_id),
+                "node_id": str(node_exec.node_id),
+                "node_name": node_exec.node.name if node_exec.node else None,
+                "status": node_exec.status,
+                "input_data": node_exec.input_data,
+                "output_data": node_exec.output_data,
+                "error_message": node_exec.error_message,
+                "started_at": node_exec.started_at,
+                "completed_at": node_exec.completed_at,
+                "execution_order": node_exec.execution_order
+            })
+        
         return {
             "id": str(workflow_run.id),
             "workflow_id": str(workflow_run.workflow_id),
+            "user_id": str(workflow_run.user_id),
             "status": workflow_run.status,
             "input_data": workflow_run.input_data,
             "output_data": workflow_run.output_data,
             "error_message": workflow_run.error_message,
             "started_at": workflow_run.started_at,
-            "completed_at": workflow_run.completed_at
+            "completed_at": workflow_run.completed_at,
+            "node_executions": node_executions
         }
