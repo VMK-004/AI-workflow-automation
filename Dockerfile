@@ -16,8 +16,8 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements first for better caching
 COPY backend/requirements.txt /app/requirements.txt
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies (suppress root user warning)
+RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Copy entire backend directory to preserve structure
 # This copies everything from backend/ into /app/, maintaining directory structure
@@ -25,6 +25,20 @@ COPY backend/ /app/
 
 # Create directory for FAISS data
 RUN mkdir -p /app/data/faiss
+
+# Verify critical structure exists (will fail build if missing)
+RUN echo "Verifying directory structure..." && \
+    ls -la /app/app/ && \
+    echo "Checking for models directory..." && \
+    ls -la /app/app/models/ && \
+    test -d /app/app && \
+    test -d /app/app/models && \
+    test -f /app/app/models/__init__.py && \
+    echo "✓ Directory structure verified - app/models exists" || \
+    (echo "✗ ERROR: Missing app/models structure" && \
+     echo "Contents of /app:" && ls -la /app/ && \
+     echo "Contents of /app/app:" && ls -la /app/app/ 2>/dev/null || echo "app directory not found" && \
+     exit 1)
 
 # Make startup script executable
 RUN chmod +x /app/start_server.py
