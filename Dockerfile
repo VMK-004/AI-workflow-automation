@@ -1,7 +1,19 @@
-# Use Python 3.12 slim image
+# Multi-stage build: Frontend + Backend
+# Stage 1: Build frontend
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /build
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+# Build with production API URL (relative path)
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=${VITE_API_URL}
+RUN npm run build
+
+# Stage 2: Python backend
 FROM python:3.12-slim
 
-# Set working directory
 WORKDIR /app
 
 # Set PYTHONPATH to include the app directory so Python can find modules
@@ -20,12 +32,13 @@ COPY backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Copy entire backend directory to preserve structure
-# This copies everything from backend/ into /app/, maintaining directory structure
 COPY backend/ /app/
+
+# Copy built frontend from previous stage
+COPY --from=frontend-builder /build/dist /app/static
 
 # Create directory for FAISS data
 RUN mkdir -p /app/data/faiss
-
 
 # Make startup script executable
 RUN chmod +x /app/start_server.py
