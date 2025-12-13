@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useRef } from 'react';
+import { useEffect, useRef, type FC, type MouseEvent } from 'react';
 import { useEditorStore } from '../../store/editorStore';
 import { NodeCard } from './NodeCard';
 import { EdgeLine, EdgeArrowMarker } from './EdgeLine';

@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { useEffect, type FC } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 

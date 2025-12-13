@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useVectorStore } from '../store/vectorStore';
 import { AddDocumentsModal } from '../components/vectors/AddDocumentsModal';

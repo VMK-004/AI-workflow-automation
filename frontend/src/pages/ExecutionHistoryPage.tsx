@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { useEffect, type FC } from 'react';
 import { useExecutionStore } from '../store/executionStore';
 import { ExecutionRunModal } from '../components/execution/ExecutionRunModal';
 import { Button } from '../components/common/Button';
@@ -33,7 +33,6 @@ export const ExecutionHistoryPage: FC = () => {
     runsError,
     totalRuns,
     fetchRuns,
-    openRunModal,
     fetchRunDetails,
     isRunModalOpen,
     selectedRun,

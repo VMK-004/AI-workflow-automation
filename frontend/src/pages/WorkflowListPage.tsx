@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { Link } from 'react-router-dom';
 import { useWorkflowStore } from '../store/workflowStore';
 import { Loader } from '../components/common/Loader';

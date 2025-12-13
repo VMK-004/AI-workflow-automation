@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { type FC } from 'react';
 import type { Edge } from '../../api/edges';
 import type { Node } from '../../api/nodes';
 

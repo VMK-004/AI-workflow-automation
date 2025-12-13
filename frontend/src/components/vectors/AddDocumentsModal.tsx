@@ -1,4 +1,4 @@
-import { FC, useState, useRef } from 'react';
+import { useState, useRef, type FC } from 'react';
 import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
 import { vectorsApi, type DocumentInput } from '../../api/vectors';

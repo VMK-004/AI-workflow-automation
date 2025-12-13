@@ -1,7 +1,7 @@
-import { FC, ReactNode, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
-import { Loader } from '../common/Loader';
+import { useEffect, type FC, type ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
+import { Loader } from "../common/Loader";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -28,8 +28,3 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
 
   return <>{children}</>;
 };
-
-
-
-
-

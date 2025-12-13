@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from 'react';
+import { useState, type FC, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { Input } from '../components/common/Input';

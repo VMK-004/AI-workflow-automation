@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useRef } from 'react';
+import { useRef, type FC, type MouseEvent } from 'react';
 import classNames from 'classnames';
 import type { Node } from '../../api/nodes';
 

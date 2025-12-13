@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { useState, useEffect, type FC } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import type { Node } from '../../api/nodes';
 import { Button } from '../common/Button';

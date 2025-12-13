@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { type FC } from 'react';
 import { XMarkIcon, CheckCircleIcon, XCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
 import type { WorkflowRun } from '../../api/execution';
 import { Button } from '../common/Button';
@@ -35,9 +35,9 @@ export const ExecutionRunModal: FC<ExecutionRunModalProps> = ({ isOpen, onClose,
     return null;
   }
 
-  const statusKey = run.status as keyof typeof STATUS_COLORS;
+  // Map 'success' to 'completed' for UI display (STATUS_COLORS has 'completed' but type has 'success')
+  const statusKey = (run.status === 'success' ? 'completed' : run.status) as keyof typeof STATUS_COLORS;
   const statusColor = STATUS_COLORS[statusKey] || STATUS_COLORS.pending;
-  const statusBg = STATUS_BG[statusKey] || STATUS_BG.pending;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -65,7 +65,7 @@ export const ExecutionRunModal: FC<ExecutionRunModalProps> = ({ isOpen, onClose,
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 mb-3">Run Summary</h4>
                 <div className={`rounded-lg border p-4 ${
-                  run.status === 'success' || run.status === 'completed'
+                  run.status === 'success'
                     ? 'bg-green-50 border-green-200'
                     : run.status === 'failed'
                     ? 'bg-red-50 border-red-200'
@@ -75,7 +75,7 @@ export const ExecutionRunModal: FC<ExecutionRunModalProps> = ({ isOpen, onClose,
                     <div>
                       <p className="text-xs font-medium text-gray-700">Status</p>
                       <div className="mt-1 flex items-center">
-                        {(run.status === 'success' || run.status === 'completed') && (
+                        {run.status === 'success' && (
                           <CheckCircleIcon className={`h-5 w-5 mr-2 ${statusColor}`} />
                         )}
                         {run.status === 'failed' && (
@@ -85,7 +85,7 @@ export const ExecutionRunModal: FC<ExecutionRunModalProps> = ({ isOpen, onClose,
                           <ClockIcon className={`h-5 w-5 mr-2 ${statusColor}`} />
                         )}
                         <span className={`text-sm font-medium ${
-                          run.status === 'success' || run.status === 'completed'
+                          run.status === 'success'
                             ? 'text-green-900'
                             : run.status === 'failed'
                             ? 'text-red-900'
@@ -131,7 +131,8 @@ export const ExecutionRunModal: FC<ExecutionRunModalProps> = ({ isOpen, onClose,
                     {run.node_executions
                       .sort((a, b) => (a.execution_order || 0) - (b.execution_order || 0))
                       .map((nodeExec) => {
-                        const nodeStatusKey = nodeExec.status as keyof typeof STATUS_COLORS;
+                        // Map 'success' to 'completed' for UI display
+                        const nodeStatusKey = (nodeExec.status === 'success' ? 'completed' : nodeExec.status) as keyof typeof STATUS_COLORS;
                         const nodeStatusBg = STATUS_BG[nodeStatusKey] || STATUS_BG.pending;
                         return (
                           <div
@@ -139,7 +140,7 @@ export const ExecutionRunModal: FC<ExecutionRunModalProps> = ({ isOpen, onClose,
                             className={`rounded-lg border p-4 ${nodeStatusBg}`}
                           >
                             <div className="flex items-start">
-                              {nodeExec.status === 'success' || nodeExec.status === 'completed' ? (
+                              {nodeExec.status === 'success' ? (
                                 <CheckCircleIcon className={`h-5 w-5 mr-3 flex-shrink-0 mt-0.5 ${STATUS_COLORS[nodeStatusKey] || STATUS_COLORS.pending}`} />
                               ) : nodeExec.status === 'failed' ? (
                                 <XCircleIcon className={`h-5 w-5 mr-3 flex-shrink-0 mt-0.5 ${STATUS_COLORS[nodeStatusKey] || STATUS_COLORS.pending}`} />
@@ -152,7 +153,7 @@ export const ExecutionRunModal: FC<ExecutionRunModalProps> = ({ isOpen, onClose,
                                     {nodeExec.node_name || `Node ${nodeExec.node_id}`}
                                   </h5>
                                   <span className={`text-xs font-medium uppercase px-2 py-1 rounded ${
-                                    nodeExec.status === 'success' || nodeExec.status === 'completed'
+                                    nodeExec.status === 'success'
                                       ? 'bg-green-100 text-green-800'
                                       : nodeExec.status === 'failed'
                                       ? 'bg-red-100 text-red-800'

@@ -1,12 +1,12 @@
-import { FC, useState, useRef } from 'react';
-import { Modal } from '../common/Modal';
-import { Button } from '../common/Button';
-import { Input } from '../common/Input';
-import { useVectorStore } from '../../store/vectorStore';
-import { vectorsApi, type DocumentInput } from '../../api/vectors';
-import toast from 'react-hot-toast';
-import { getErrorMessage } from '../../utils/http';
-import { DocumentArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useState, useRef, type FC } from "react";
+import { Modal } from "../common/Modal";
+import { Button } from "../common/Button";
+import { Input } from "../common/Input";
+import { useVectorStore } from "../../store/vectorStore";
+import { vectorsApi, type DocumentInput } from "../../api/vectors";
+import toast from "react-hot-toast";
+import { getErrorMessage } from "../../utils/http";
+import { DocumentArrowUpIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface CreateCollectionModalProps {
   isOpen: boolean;
@@ -18,26 +18,31 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
   onClose,
 }) => {
   const { fetchCollections } = useVectorStore();
-  const [name, setName] = useState('');
-  const [documentsText, setDocumentsText] = useState('');
+  const [name, setName] = useState("");
+  const [documentsText, setDocumentsText] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadMode, setUploadMode] = useState<'text' | 'files'>('text');
+  const [uploadMode, setUploadMode] = useState<"text" | "files">("text");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
-    const allowedTypes = ['.pdf', '.docx', '.doc', '.txt', '.md'];
+
+    const allowedTypes = [".pdf", ".docx", ".doc", ".txt", ".md"];
     const invalidFiles = files.filter(
-      (file) => !allowedTypes.some((ext) => file.name.toLowerCase().endsWith(ext))
+      (file) =>
+        !allowedTypes.some((ext) => file.name.toLowerCase().endsWith(ext))
     );
-    
+
     if (invalidFiles.length > 0) {
-      toast.error(`Invalid file type(s): ${invalidFiles.map((f) => f.name).join(', ')}. Supported: PDF, DOCX, TXT, MD`);
+      toast.error(
+        `Invalid file type(s): ${invalidFiles
+          .map((f) => f.name)
+          .join(", ")}. Supported: PDF, DOCX, TXT, MD`
+      );
       return;
     }
-    
+
     setSelectedFiles((prev) => [...prev, ...files]);
   };
 
@@ -55,36 +60,39 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
     e.preventDefault();
 
     if (!name.trim()) {
-      toast.error('Collection name is required');
+      toast.error("Collection name is required");
       return;
     }
 
-    if (uploadMode === 'files') {
+    if (uploadMode === "files") {
       // Handle file upload - create empty collection first, then upload files
       if (selectedFiles.length === 0) {
-        toast.error('Please select at least one file');
+        toast.error("Please select at least one file");
         return;
       }
 
       setIsSubmitting(true);
       try {
         // Upload files - this will create the collection if it doesn't exist
-        const result = await vectorsApi.uploadFiles(
-          name.trim(),
-          selectedFiles
+        const result = await vectorsApi.uploadFiles(name.trim(), selectedFiles);
+
+        toast.success(
+          `Collection created with ${
+            result.files_processed || selectedFiles.length
+          } file(s) uploaded, ${result.documents_added} document(s) added!`
         );
 
-        toast.success(`Collection created with ${result.files_processed || selectedFiles.length} file(s) uploaded, ${result.documents_added} document(s) added!`);
-        
         if (result.errors && result.errors.length > 0) {
-          toast.error(`Some files failed: ${result.errors.join('; ')}`, { duration: 5000 });
+          toast.error(`Some files failed: ${result.errors.join("; ")}`, {
+            duration: 5000,
+          });
         }
 
-        setName('');
+        setName("");
         setSelectedFiles([]);
-        setUploadMode('text');
+        setUploadMode("text");
         if (fileInputRef.current) {
-          fileInputRef.current.value = '';
+          fileInputRef.current.value = "";
         }
         await fetchCollections();
         onClose();
@@ -98,7 +106,7 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
 
     // Handle text input (existing logic)
     if (!documentsText.trim()) {
-      toast.error('At least one document is required');
+      toast.error("At least one document is required");
       return;
     }
 
@@ -109,7 +117,7 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
       const parsed = JSON.parse(documentsText);
       if (Array.isArray(parsed)) {
         documents = parsed.map((doc: any) => {
-          if (typeof doc === 'string') {
+          if (typeof doc === "string") {
             return { text: doc };
           }
           return {
@@ -118,19 +126,19 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
           };
         });
       } else {
-        throw new Error('Not an array');
+        throw new Error("Not an array");
       }
     } catch {
       // If not JSON, treat each line as a separate document
       documents = documentsText
-        .split('\n')
+        .split("\n")
         .map((line) => line.trim())
         .filter((line) => line.length > 0)
         .map((line) => ({ text: line }));
     }
 
     if (documents.length === 0) {
-      toast.error('No valid documents found');
+      toast.error("No valid documents found");
       return;
     }
 
@@ -141,9 +149,9 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
         documents,
       });
 
-      toast.success('Collection created successfully!');
-      setName('');
-      setDocumentsText('');
+      toast.success("Collection created successfully!");
+      setName("");
+      setDocumentsText("");
       await fetchCollections();
       onClose();
     } catch (error) {
@@ -155,19 +163,24 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setName('');
-      setDocumentsText('');
+      setName("");
+      setDocumentsText("");
       setSelectedFiles([]);
-      setUploadMode('text');
+      setUploadMode("text");
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
       onClose();
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Create New Collection" size="lg">
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Create New Collection"
+      size="lg"
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -190,11 +203,11 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
         <div className="flex space-x-4 border-b border-gray-200 pb-4">
           <button
             type="button"
-            onClick={() => setUploadMode('text')}
+            onClick={() => setUploadMode("text")}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              uploadMode === 'text'
-                ? 'bg-primary-100 text-primary-700 border-2 border-primary-500'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-transparent'
+              uploadMode === "text"
+                ? "bg-primary-100 text-primary-700 border-2 border-primary-500"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-transparent"
             }`}
             disabled={isSubmitting}
           >
@@ -202,11 +215,11 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => setUploadMode('files')}
+            onClick={() => setUploadMode("files")}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              uploadMode === 'files'
-                ? 'bg-primary-100 text-primary-700 border-2 border-primary-500'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-transparent'
+              uploadMode === "files"
+                ? "bg-primary-100 text-primary-700 border-2 border-primary-500"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-transparent"
             }`}
             disabled={isSubmitting}
           >
@@ -215,7 +228,7 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
         </div>
 
         {/* File Upload Mode */}
-        {uploadMode === 'files' && (
+        {uploadMode === "files" && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Upload Files *
@@ -243,7 +256,9 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-gray-500">PDF, DOCX, TXT, MD up to 10MB each</p>
+                <p className="text-xs text-gray-500">
+                  PDF, DOCX, TXT, MD up to 10MB each
+                </p>
               </div>
             </div>
 
@@ -259,7 +274,9 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {file.name}
                       </p>
-                      <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatFileSize(file.size)}
+                      </p>
                     </div>
                     <button
                       type="button"
@@ -277,15 +294,15 @@ export const CreateCollectionModal: FC<CreateCollectionModalProps> = ({
         )}
 
         {/* Text Input Mode */}
-        {uploadMode === 'text' && (
+        {uploadMode === "text" && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Documents *
             </label>
             <textarea
-            value={documentsText}
-            onChange={(e) => setDocumentsText(e.target.value)}
-            placeholder={`Enter documents (one per line):
+              value={documentsText}
+              onChange={(e) => setDocumentsText(e.target.value)}
+              placeholder={`Enter documents (one per line):
 Python is a programming language
 FastAPI is a web framework
 
@@ -294,13 +311,14 @@ Or JSON array format:
   {"text": "Document 1", "metadata": {"category": "tech"}},
   {"text": "Document 2"}
 ]`}
-            className="w-full h-64 px-3 py-2 border border-gray-300 rounded-md font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-y"
-            required
-            disabled={isSubmitting}
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            Enter one document per line, or use JSON array format with text and optional metadata
-          </p>
+              className="w-full h-64 px-3 py-2 border border-gray-300 rounded-md font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-y"
+              required
+              disabled={isSubmitting}
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Enter one document per line, or use JSON array format with text
+              and optional metadata
+            </p>
           </div>
         )}
 
@@ -315,14 +333,13 @@ Or JSON array format:
           </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting
-              ? uploadMode === 'files'
-                ? 'Creating & Uploading...'
-                : 'Creating...'
-              : 'Create Collection'}
+              ? uploadMode === "files"
+                ? "Creating & Uploading..."
+                : "Creating..."
+              : "Create Collection"}
           </Button>
         </div>
       </form>
     </Modal>
   );
 };
-

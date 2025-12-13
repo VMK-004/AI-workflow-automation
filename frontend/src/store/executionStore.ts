@@ -34,7 +34,7 @@ interface ExecutionState {
   clearRuns: () => void;
 }
 
-export const useExecutionStore = create<ExecutionState>((set, get) => ({
+export const useExecutionStore = create<ExecutionState>((set) => ({
   // Current run execution state
   isRunning: false,
   runData: null,

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useWorkflowStore } from '../store/workflowStore';
 import { useEditorStore } from '../store/editorStore';
@@ -21,7 +21,6 @@ export const WorkflowEditorPage: FC = () => {
   const {
     setNodes,
     setEdges,
-    selectedNodeId,
     getSelectedNode,
     clearSelection,
     addEdge,
