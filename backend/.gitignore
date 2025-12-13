@@ -34,8 +34,13 @@ wheels/
 # FAISS indexes
 data/faiss/*.index
 
-# Models cache
-models/
+# ML Models cache (but NOT app/models/ Python package)
+# Only ignore model files, not the app/models/ directory
+*.pth
+*.pt
+*.h5
+*.ckpt
+*.safetensors
 
 # IDE
 .vscode/
