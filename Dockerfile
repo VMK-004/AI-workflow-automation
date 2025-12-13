@@ -19,11 +19,9 @@ COPY backend/requirements.txt /app/requirements.txt
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend code - explicitly copy app directory and other files
-COPY backend/app /app/app
-COPY backend/start_server.py /app/start_server.py
-COPY backend/alembic.ini /app/alembic.ini
-COPY backend/alembic /app/alembic
+# Copy entire backend directory to preserve structure
+# This copies everything from backend/ into /app/, maintaining directory structure
+COPY backend/ /app/
 
 # Create directory for FAISS data
 RUN mkdir -p /app/data/faiss
