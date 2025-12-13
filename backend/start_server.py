@@ -4,8 +4,21 @@ import os
 import sys
 
 def main():
-    port = int(os.environ.get("PORT", "8000"))
+    # Get PORT from environment, default to 8000
+    port_str = os.environ.get("PORT", "8000")
+    
+    # Clean the port string (remove any shell expansion artifacts)
+    port_str = port_str.strip().split(":")[0].split("}")[0]
+    
+    try:
+        port = int(port_str)
+    except ValueError:
+        print(f"ERROR: Invalid PORT value '{port_str}', defaulting to 8000", file=sys.stderr)
+        port = 8000
+    
     host = "0.0.0.0"
+    
+    print(f"Starting server on {host}:{port}", file=sys.stderr)
     
     # Import uvicorn and run
     import uvicorn

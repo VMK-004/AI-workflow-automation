@@ -241,3 +241,6 @@ export const VectorCollectionDetailPage: FC = () => {
 };
 
 
+
+
+
